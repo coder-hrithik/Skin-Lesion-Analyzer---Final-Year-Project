@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="eng">
+
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+	<link rel="stylesheet" href="style.css">
+	<title>Automated Skin Lesion Analyzer</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- <link rel="stylesheet" href="styles.css"> -->
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:500&display=swap" rel="stylesheet">
+</head>
+
+<body>
+	<div class="main">
+		<div class="navbar">
+			<div>
+				<a href="#">
+					<img class="primary-icon" src="" />
+				</a>
+			</div>
+			<div class="icon">
+				<h2 class="logo">Skin Lesion Analzyer</h2>
+			</div>
+			<div class="menu">
+				<ul>
+					<li><a href="#home">HOME</a></li>
+					<li><a href="#about">ABOUT</a></li>
+					<li><a href="#contact">CONTACT</a></li>
+				</ul>
+			</div>
+			<div class="search-box">
+				<input class="search-txt" type="text" name="" placeholder="Type to search">
+				<a class="search-btn" href="#">
+					<i class="fas fa-search"></i>
+				</a>
+			</div>
+		</div>
+		<div id="home" class="content">
+			<h1>Skin Cancer <br><span>Detection</span> <br>Course</h1>
+			<p class="par">Automated Skin Lesion Analyzer can classify 7 types of dangerous skin cancer disease<br>
+				Melanocytic nev(nv), Melanoma(mel),Benign keratosis-like lesions(bkl),<br>Basal cell carcinoma(bcc),Actinic
+				keratose(akiec),Vascular lesions(vaasc),Dermatofibroma(df)
+				<br>
+			</p>
+			<div class="upload-file">
+				<form class="file-form" action="/" method="post" , enctype="multipart/form-data">
+					<input id="img_input" class="file-form-input" type="file" , name="file" />
+					<button class="btn btn-success btn-lg">Predict image<button>
+				</form>
+			</div>
+			<div id="imgTest"></div>
+			<h2 id="predict_class"></h2>
+			<div id="about" class="trainer">
+				<div class="about">
+					<h3>What is skin lesion?</h3>
+					<h6>A skin lesion is a part of the skin that has an abnormal growth or appearance compared to the skin around
+						it. Two categories of skin lesions exist: primary and secondary. </h6>
+					<p>Skin lesions are areas of skin that look different from the surrounding area. They are often bumps or
+						patches and many issues can cause them</p>
+				</div>
+				<div class="people">
+					<div class="team1">
+						<div class="img">
+							<img src="dis.jpg">
+						</div>
+					</div>
+					<div class="teamDetails">
+						<div class="name">
+							<h4>Melanoma</h4>
+						</div>
+						<div class="pro">
+							<p>Skin disease</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<script>
+
+				var img_ele = document.getElementById("img_input");
+				img_ele.addEventListener("change", function () {
+
+					var filesSelected = document.getElementById("img_input").files;
+					if (filesSelected.length > 0) {
+						var fileToLoad = filesSelected[0];
+						console.log(fileToLoad);
+
+						var fileReader = new FileReader();
+
+						fileReader.onload = function (fileLoadedEvent) {
+							var srcData = fileLoadedEvent.target.result; // <--- data: base64
+
+							var newImage = document.createElement('img');
+							newImage.src = srcData;
+
+							document.getElementById("imgTest").innerHTML = newImage.outerHTML;
+
+							const data = {
+								img_name: fileToLoad.name
+							};
+
+							var op = document.getElementById('predict_class');
+
+							axios.post('http://127.0.0.1:5000/classify', data)
+								.then(response => {
+									const cls = response.data.class;
+									console.log(cls);
+									op.innerHTML = 'The class of this image is: ' + cls;
+								})
+								.catch((error) => {
+									console.log('error ' + error);
+								});
+
+						}
+						fileReader.readAsDataURL(fileToLoad);
+					}
+				});
+
+
+
+
+
+
+
+			</script>
+
+</body>
+
+</html>
